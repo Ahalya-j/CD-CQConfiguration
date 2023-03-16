@@ -1,4 +1,4 @@
-trigger CasetoNC on Case (after insert) {
+trigger CasetoNC on Case (after insert, after update) {
     
    //Boolean hasPermission = FeatureManagement.checkPermission('Case_Admin');
 if (PermissionHelper.hasCaseAdminPermission()) {
@@ -35,7 +35,7 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
     ]);
     
     for (Case c : Trigger.new) {
-        if (c.Type == 'Problem' && !existingNonconformanceMap.containsKey(c.Id)) {
+        if (c.Type == 'Problem' && !existingNonconformanceMap.containsKey(c.Id) || existingNonconformanceMap.get(c.Id) == null) {
             SQX_Nonconformance__c nonconformance = new SQX_Nonconformance__c();
             nonconformance.Name = c.CaseNumber;
             nonconformance.Priority__c = c.Priority;
