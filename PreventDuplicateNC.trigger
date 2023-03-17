@@ -1,4 +1,4 @@
-trigger PreventDuplicateNC on SQX_Nonconformance__c (before insert) {
+trigger PreventDuplicateNC on SQX_Nonconformance__c (before insert,before update) {
 
    list<string> acc = new list<string>();
     for(SQX_Nonconformance__c a:Trigger.new)
@@ -14,7 +14,7 @@ trigger PreventDuplicateNC on SQX_Nonconformance__c (before insert) {
                 nc.addError('Nonconformance already exists with this name');
             }
         }
-    /*    if(trigger.isUpdate)
+       if(trigger.isUpdate)
         {
             for(SQX_Nonconformance__c oldnc :trigger.old)
             {
@@ -23,6 +23,6 @@ trigger PreventDuplicateNC on SQX_Nonconformance__c (before insert) {
                     nc.addError('Nonconformance already exists with this name');
                 }
             }
-        }*/
-    }  
+        }
+    } 
 }
