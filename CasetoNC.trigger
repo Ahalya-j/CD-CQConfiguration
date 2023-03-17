@@ -13,18 +13,17 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
   //  Integer count = [SELECT COUNT() FROM Case];
    // Integer count = 0;
    
-     AggregateResult[] results = [
+    /* AggregateResult[] results = [
         SELECT Count(Id) cnt, Type
         FROM Case
         WHERE Type = 'Problem'
         GROUP BY Type
     ];
 
-    Integer count = (Integer) results[0].get('cnt');
+    Integer count = (Integer) results[0].get('cnt');*/
+    
     for (Case c : Trigger.new) {
-        if (c.Type == 'Problem') {
             caseIds.add(c.Id);
-           count++;
         }
     }
     
@@ -34,6 +33,8 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
         WHERE Case__c IN :caseIds
     ]);
     
+      Integer ccc = [SELECT COUNT() FROM Case];
+      
     for (Case c : Trigger.new) {
         if (c.Type == 'Problem' && !existingNonconformanceMap.containsKey(c.Id) || existingNonconformanceMap.get(c.Id) == null) {
             SQX_Nonconformance__c nonconformance = new SQX_Nonconformance__c();
@@ -41,7 +42,7 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
             nonconformance.Priority__c = c.Priority;
             nonconformance.Description__c = c.Description;
             nonconformance.Title__c = c.Subject;
-            nonconformance.QMS_Reference_Number__c +=count;
+            nonconformance.QMS_Reference_Number__c = String.value(ccc);
             nonconformance.Case__c = c.Id;
             nonconformanceList.add(nonconformance);
         }
@@ -51,7 +52,7 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
         insert nonconformanceList;
     }
     
-    List<Case> caseList = [SELECT Id, SQX_NC_Reference__c FROM Case WHERE Id IN :caseIds];
+   /* List<Case> caseList = [SELECT Id, SQX_NC_Reference__c FROM Case WHERE Id IN :caseIds];
     
     for (Case c : caseList) {
         for (SQX_Nonconformance__c nc : nonconformanceList) {
@@ -64,6 +65,6 @@ system.debug('hasCaseAdminPermission'+ PermissionHelper.hasCaseAdminPermission()
     
     if (!casetoUpdate.isEmpty()) {
         update casetoUpdate;
-    } 
+    } */
 }
 }
